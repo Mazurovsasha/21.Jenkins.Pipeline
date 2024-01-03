@@ -10,7 +10,7 @@ pipeline {
 
         stage('Validate Dockerfile') {
             steps {
-                sh 'docker run --rm -i hadolint/hadolint < test.hw.21/Dockerfile'
+                sh 'docker run --rm -i hadolint/hadolint < app/Dockerfile'
             }
         }
 
