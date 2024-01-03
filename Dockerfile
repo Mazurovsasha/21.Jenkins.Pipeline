@@ -10,7 +10,7 @@ RUN groupadd -r sasha && useradd -r -g sasha sasha
 COPY requirements.txt requirements.txt
 
 # Установите зависимости
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Скопируйте файлы приложения в рабочую директорию
 COPY . .
