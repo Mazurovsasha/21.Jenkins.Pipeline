@@ -24,7 +24,7 @@ pipeline {
                     retry(3) {
                         script {
                             try {
-                                sh 'curl localhost:5000' // Check if webUI is accessible
+                                sh 'curl localhost:5000' 
                             } catch (Exception e) {
                                 error "WebUI of application is not accessible"
                             }
