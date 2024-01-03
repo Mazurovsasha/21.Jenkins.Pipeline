@@ -10,13 +10,13 @@ pipeline {
 
         stage('Validate Dockerfile') {
             steps {
-                sh 'docker run --rm -i hadolint/hadolint < Dockerfile'
+                sh 'docker run --rm -i hadolint/hadolint < test.hw.21/Dockerfile'
             }
         }
 
         stage('Build and Test Image') {
             steps {
-                sh 'docker build -t hw.21:v.0.1.0 .'
+                sh 'docker build -t hw.21:v.0.1.0 ./app'
                 sh 'docker run -d --name test-container -p 5000:5000 hw.21:v.0.1.0'
                 sh 'sleep 15' 
 
