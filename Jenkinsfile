@@ -17,14 +17,14 @@ pipeline {
         stage('Build and Test Image') {
             steps {
                 sh 'docker build -t hw.21:v.0.1.0 ./app'
-                sh 'docker run -d --name test-container1 -p 5000:5000 hw.21:v.0.1.0'
+                sh 'docker run -d --name test-container2 -p 5000:5000 hw.21:v.0.1.0'
                 sh 'sleep 15' 
 
                 timeout(time: 5, unit: 'SECONDS') {
                     retry(3) {
                         script {
                             try {
-                                sh 'curl localhost:5000' 
+                                sh 'docker exec test-container2 curl http://localhost:5000' 
                             } catch (Exception e) {
                                 error "WebUI of application is not accessible"
                             }
