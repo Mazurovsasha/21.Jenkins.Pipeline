@@ -16,7 +16,7 @@ pipeline {
 
         stage('Build and Test Image') {
             steps {
-                sh 'docker build -t hw.21:v.1.0.0 ./app'
+                sh 'docker build -t mazurovsasha/hw.21:v.1.0.0 ./app'
                 sh 'docker run -d --name test-container3 -p 5000:5000 hw.21:v.1.0.0'
                 sh 'sleep 15' 
 
