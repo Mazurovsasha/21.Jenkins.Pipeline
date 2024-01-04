@@ -17,7 +17,7 @@ pipeline {
         stage('Build and Test Image') {
             steps {
                 sh 'docker build -t mazurovsasha/hw.21:v.1.0.0 ./app'
-                sh 'docker run -d --name test-container3 -p 5000:5000 hw.21:v.1.0.0'
+                sh 'docker run -d --name test-container3 -p 5000:5000 mazurovsasha/hw.21:v.1.0.0'
                 sh 'sleep 15' 
 
                 timeout(time: 5, unit: 'SECONDS') {
@@ -32,8 +32,8 @@ pipeline {
                     }
                 }
 
-                sh 'docker stop $(docker ps -a -q -f ancestor=hw.21:v.1.0.0)'
-                sh 'docker rm $(docker ps -a -q -f ancestor=hw.21:v.1.0.0)'
+                sh 'docker stop $(docker ps -a -q -f ancestor=mazurovsasha/hw.21:v.1.0.0)'
+                sh 'docker rm $(docker ps -a -q -f ancestor=mazurovsasha/hw.21:v.1.0.0)'
             }
         }
 
