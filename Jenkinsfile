@@ -47,7 +47,7 @@ pipeline {
                         )
                     ]) {
                         sh 'docker login -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD'
-                        sh 'docker push hw.21:v.0.3.0'
+                        sh 'docker push mazurovsasha/hw.21:v.0.3.0'
                     }
                 }
             }
