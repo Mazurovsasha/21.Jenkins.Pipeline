@@ -32,8 +32,8 @@ pipeline {
                     }
                 }
 
-                sh 'docker stop $(docker ps -q -f ancestor=hw.21:v.1.0.0)'
-                sh 'docker rm $(docker ps -q -f ancestor=hw.21:v.1.0.0)'
+                sh 'docker stop $(docker ps -a -q -f ancestor=hw.21:v.1.0.0)'
+                sh 'docker rm $(docker ps -a -q -f ancestor=hw.21:v.1.0.0)'
             }
         }
 
