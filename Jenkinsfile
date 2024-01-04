@@ -16,8 +16,8 @@ pipeline {
 
         stage('Build and Test Image') {
             steps {
-                sh 'docker build -t hw.21:v.0.3.0 ./app'
-                sh 'docker run -d --name test-container3 -p 5000:5000 hw.21:v.0.3.0'
+                sh 'docker build -t hw.21:v.1.0.0 ./app'
+                sh 'docker run -d --name test-container3 -p 5000:5000 hw.21:v.1.0.0'
                 sh 'sleep 15' 
 
                 timeout(time: 5, unit: 'SECONDS') {
@@ -32,7 +32,8 @@ pipeline {
                     }
                 }
 
-                sh 'docker stop $(docker ps -q -f ancestor=hw.21:v.0.3.0)'
+                sh 'docker stop $(docker ps -q -f ancestor=hw.21:v.1.0.0)'
+                sh 'docker rm $(docker ps -q -f ancestor=hw.21:v.1.0.0)'
             }
         }
 
@@ -47,7 +48,7 @@ pipeline {
                         )
                     ]) {
                         sh 'docker login -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD'
-                        sh 'docker push mazurovsasha/hw.21:v.0.3.0'
+                        sh 'docker push mazurovsasha/hw.21:v.1.0.0'
                     }
                 }
             }
