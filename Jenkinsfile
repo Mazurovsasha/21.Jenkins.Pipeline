@@ -54,62 +54,64 @@ pipeline {
             }
         }
 
-        // stage('Deploy to Pre-Prod') {
-        //     steps {
-        //         input message: 'Approve Deployment to Pre-Prod', submitter: 'jenkins'
+        stage('Deploy to Pre-Prod') {
+            steps {
+                input message: 'Approve Deployment to Pre-Prod', submitter: 'jenkins'
 
-        //         // Deploy to Pre-Prod namespace
-        //         sh 'kubectl config use-context your-kubectl-context'
-        //         sh 'kubectl apply -f kubernetes-pre-prod.yml --namespace pre-prod'
+                // Deploy to Pre-Prod namespace
+                // sh 'kubectl config use-context your-kubectl-context'
+                sh 'kubectl apply -f app-pre-prod.yml --namespace pre-prod'
 
-        //         timeout(time: 5, unit: 'MINUTES') {
-        //             script {
-        //                 // Test if deployment is successful
-        //                 try {
-        //                     sh 'kubectl rollout status deployment/your-deployment --namespace pre-prod'
-        //                 } catch (Exception e) {
-        //                     error "Deployment to Pre-Prod failed"
-        //                 }
+                timeout(time: 5, unit: 'MINUTES') {
+                    script {
+                        // Test if deployment is successful
+                        try {
+                            sh 'kubectl rollout status deployment/myapp --namespace pre-prod'
+                        } catch (Exception e) {
+                            error "Deployment to Pre-Prod failed"
+                        }
 
-        //                 // Display message and prompt for approval
-        //                 echo 'Deployment to Pre-Prod is successful'
-        //                 input message: 'Approve Deployment to Prod', submitter: 'jenkins'
-        //             }
-        //         }
-        //     }
-        // }
+                        // Display message and prompt for approval
+                        echo 'Deployment to Pre-Prod is successful'
+                        input message: 'Approve Deployment to Prod', submitter: 'jenkins'
+                    }
+                }
+            }
+        }
 
-        // stage('Deploy to Prod') {
-        //     steps {
-        //         // Deploy to Prod namespace
-        //         sh 'kubectl apply -f kubernetes-prod.yml --namespace prod'
+        stage('Cleaning') {
+            steps {
+                // Remove deployment from Pre-Prod namespace
+                sh 'kubectl delete deployment myapp --namespace pre-prod'
+            }
+        }
+        stage('Deploy to Prod') {
+            steps {
+                // Deploy to Prod namespace
+                sh 'kubectl apply -f app-prod.yml --namespace prod'
 
-        //         timeout(time: 5, unit: 'MINUTES') {
-        //             script {
-        //                 // Test if deployment is successful
-        //                 try {
-        //                     sh 'kubectl rollout status deployment/your-deployment --namespace prod'
-        //                 } catch (Exception e) {
-        //                     error "Deployment to Prod failed"
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+                timeout(time: 5, unit: 'MINUTES') {
+                    script {
+                        // Test if deployment is successful
+                        try {
+                            sh 'kubectl rollout status deployment/myapp --namespace prod'
+                        } catch (Exception e) {
+                            error "Deployment to Prod failed"
+                        }
+                    }
+                }
+            }
+        }
 
-        // stage('Cleaning') {
-        //     steps {
-        //         // Remove deployment from Pre-Prod namespace
-        //         sh 'kubectl delete deployment your-deployment --namespace pre-prod'
-        //     }
-        // }
+    }
 
-        // stage('Notification') {
-        //     steps {
-        //         // Send notification about successful deployment
-        //         sh 'echo "Deployment to Prod is successful. Sending notification..."'
-        //         // Add your notification command here
-        //     }
-        // }
+    post {
+            success {
+                slackSend (channel: 'jenlins', color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        
+            }
+            failure {
+                slackSend (channel: 'jenlins', color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            }
     }
 }
